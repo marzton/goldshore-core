@@ -31,6 +31,11 @@ app.get('/accounts', (c) => {
 
 app.get('/accounts/:id/balances/latest', (c) => {
   const id = c.req.param('id')
+
+  if (!/^acc_[a-zA-Z0-9]+$/.test(id)) {
+    return c.json({ error: 'Invalid account ID format' }, 400)
+  }
+
   const balance: BalanceSnapshot = {
     id: 'bal_123',
     accountId: id,
@@ -48,6 +53,11 @@ app.get('/accounts/:id/balances/latest', (c) => {
 
 app.get('/accounts/:id/positions', (c) => {
   const id = c.req.param('id')
+
+  if (!/^acc_[a-zA-Z0-9]+$/.test(id)) {
+    return c.json({ error: 'Invalid account ID format' }, 400)
+  }
+
   const positions: PositionSnapshot[] = [
     {
       id: 'pos_123',
