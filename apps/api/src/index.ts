@@ -8,7 +8,7 @@ app.get('/', (c) => c.text('Goldshore API MVP'))
 
 // MVP Routes with mock data
 
-const MOCK_ACCOUNTS: Account[] = [
+const MOCK_ACCOUNTS: Omit<Account, 'createdAt' | 'updatedAt'>[] = [
   {
     id: 'acc_123',
     broker: 'tos',
@@ -21,15 +21,15 @@ const MOCK_ACCOUNTS: Account[] = [
     closeOnly: false,
     pdtTracked: true,
     iraRestricted: false,
-    createdAt: new Date().toISOString(),
-    updatedAt: new Date().toISOString()
   }
 ]
 
 app.get('/accounts', (c) => {
+  const now = new Date().toISOString()
   const accounts = MOCK_ACCOUNTS.map(acc => ({
     ...acc,
-    updatedAt: new Date().toISOString()
+    createdAt: now,
+    updatedAt: now
   }))
   return c.json({ accounts })
 })
@@ -47,11 +47,6 @@ const MOCK_BALANCE: Omit<BalanceSnapshot, 'accountId' | 'timestamp'> = {
 
 app.get('/accounts/:id/balances/latest', (c) => {
   const id = c.req.param('id')
-
-  if (!/^acc_[a-zA-Z0-9]+$/.test(id)) {
-    return c.json({ error: 'Invalid account ID format' }, 400)
-  }
-
   const balance: BalanceSnapshot = {
     ...MOCK_BALANCE,
     accountId: id,
@@ -78,27 +73,11 @@ const MOCK_POSITIONS: Omit<PositionSnapshot, 'accountId' | 'timestamp'>[] = [
 app.get('/accounts/:id/positions', (c) => {
   const id = c.req.param('id')
   const timestamp = new Date().toISOString()
-
-  if (!/^acc_[a-zA-Z0-9]+$/.test(id)) {
-    return c.json({ error: 'Invalid account ID format' }, 400)
-  }
-
-  const positions: PositionSnapshot[] = [
-    {
-      id: 'pos_123',
-      accountId: id,
-      instrumentId: 'inst_AAPL',
-      timestamp: new Date().toISOString(),
-      quantity: 100,
-      avgOpenPrice: 150.00,
-      markPrice: 155.00,
-      marketValue: 15500.00,
-      unrealizedPnL: 500.00,
-      realizedPnL: 0,
-      dayPnL: 100.00,
-      costBasis: 15000.00
-    }
-  ]
+  const positions: PositionSnapshot[] = MOCK_POSITIONS.map(p => ({
+    ...p,
+    accountId: id,
+    timestamp
+  }))
   return c.json({ positions })
 })
 
@@ -112,7 +91,7 @@ app.get('/portfolio/overview', (c) => {
   return c.json(MOCK_PORTFOLIO_OVERVIEW)
 })
 
-const port = process.env.PORT ? parseInt(process.env.PORT, 10) : 3000
+const port = process.env.PORT ? parseInt(process.env.PORT) : 3000
 console.log(`Server is running on port ${port}`)
 
 serve({
