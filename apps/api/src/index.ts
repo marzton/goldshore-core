@@ -2,7 +2,7 @@ import { serve } from '@hono/node-server'
 import { Hono } from 'hono'
 import { Account, BalanceSnapshot, PositionSnapshot } from '@goldshore/types'
 
-export const app = new Hono()
+const app = new Hono()
 
 app.get('/', (c) => c.text('Goldshore API MVP'))
 
@@ -78,10 +78,7 @@ app.get('/portfolio/overview', (c) => {
 const port = process.env.PORT ? parseInt(process.env.PORT, 10) : 3000
 console.log(`Server is running on port ${port}`)
 
-if (process.env.NODE_ENV !== 'test') {
-  console.log(`Server is running on port ${port}`)
-  serve({
-    fetch: app.fetch,
-    port
-  })
-}
+serve({
+  fetch: app.fetch,
+  port
+})
