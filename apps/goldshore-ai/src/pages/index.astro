@@ -15,7 +15,7 @@ if (Astro.request.method === 'POST') {
     if (question) {
       await DB.prepare(
         `INSERT INTO inquiries (id, user_id, source, question, created_at)
-         VALUES (?, 'anonymous', 'goldshore-ai', ?, ?)`,
+         VALUES (?, NULL, 'goldshore-ai', ?, ?)`,
       )
         .bind(crypto.randomUUID(), question, Date.now())
         .run();
