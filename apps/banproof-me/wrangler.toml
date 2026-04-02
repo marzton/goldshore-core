@@ -1,22 +1,11 @@
-name            = "banproof-me"
-main            = "src/index.ts"
-compatibility_date = "2026-04-02"
+[vars]
+# Toggle for testing logic without burning API credits
+USE_MOCK = "true"
+ENVIRONMENT = "staging"
 
-# ── Shared D1 instance: gs-platform-prod ─────────────────────────────────────
-# Replace database_id with the UUID from `wrangler d1 create gs-platform-prod`
-[[d1_databases]]
-binding       = "DB"
+[env.production]
+# Production-only D1 database binding
+[[env.production.d1_databases]]
+binding = "DB" # Points to gs-platform-prod
 database_name = "gs-platform-prod"
-database_id   = "YOUR_D1_DATABASE_ID"
-
-# ── Shared KV namespace: INFRA_SECRETS ────────────────────────────────────────
-# Replace id with the UUID from `wrangler kv:namespace create INFRA_SECRETS`
-[[kv_namespaces]]
-binding = "INFRA_SECRETS"
-id      = "YOUR_KV_NAMESPACE_ID"
-
-# ── Cloudflare Workflow: BanproofEngine ───────────────────────────────────────
-[[workflows]]
-binding    = "BANPROOF_ENGINE"
-name       = "banproof-engine"
-class_name = "BanproofEngine"
+database_id = "..."
