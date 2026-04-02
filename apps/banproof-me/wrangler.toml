@@ -3,7 +3,9 @@
 USE_MOCK = "true"
 ENVIRONMENT = "staging"
 
-[[d1_databases]]
+[env.production]
+# Production-only D1 database binding
+[[env.production.d1_databases]]
 binding = "DB" # Points to gs-platform-prod
 database_name = "gs-platform-prod"
 database_id = "..."
