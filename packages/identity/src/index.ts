@@ -12,6 +12,23 @@ export interface GsUser {
   exp?: number;
 }
 
+const VALID_ROLES = new Set<string>(['user', 'admin', 'sudo']);
+const VALID_TIERS = new Set<string>(['free', 'pro', 'agency']);
+
+function assertValidGsUser(payload: unknown): asserts payload is GsUser {
+  const p = payload as Record<string, unknown>;
+  if (
+    typeof p !== 'object' ||
+    p === null ||
+    typeof p['id'] !== 'string' ||
+    typeof p['email'] !== 'string' ||
+    !VALID_ROLES.has(p['role'] as string) ||
+    !VALID_TIERS.has(p['plan_tier'] as string)
+  ) {
+    throw new Error('Invalid token payload');
+  }
+}
+
 // ── JWT helpers ────────────────────────────────────────────────────────────────
 
 export async function signJwt(
@@ -23,7 +40,8 @@ export async function signJwt(
 
 export async function verifyJwt(token: string, secret: string): Promise<GsUser> {
   const payload = await verify(token, secret);
-  return payload as unknown as GsUser;
+  assertValidGsUser(payload);
+  return payload;
 }
 
 // ── Auth middleware ────────────────────────────────────────────────────────────
@@ -61,7 +79,9 @@ export function requireRole(minRole: Role): MiddlewareHandler {
   return async (c: Context, next: Next) => {
     const user = c.get('user') as GsUser | undefined;
     if (!user) return c.json({ error: 'Unauthorized' }, 401);
-    if (ROLE_LEVELS[user.role] < ROLE_LEVELS[minRole]) {
+    const userLevel = ROLE_LEVELS[user.role];
+    if (userLevel === undefined) return c.json({ error: 'Unauthorized' }, 401);
+    if (userLevel < ROLE_LEVELS[minRole]) {
       return c.json({ error: 'Forbidden' }, 403);
     }
     await next();
@@ -80,7 +100,9 @@ export function requirePlanTier(minTier: PlanTier): MiddlewareHandler {
   return async (c: Context, next: Next) => {
     const user = c.get('user') as GsUser | undefined;
     if (!user) return c.json({ error: 'Unauthorized' }, 401);
-    if (TIER_LEVELS[user.plan_tier] < TIER_LEVELS[minTier]) {
+    const userLevel = TIER_LEVELS[user.plan_tier];
+    if (userLevel === undefined) return c.json({ error: 'Unauthorized' }, 401);
+    if (userLevel < TIER_LEVELS[minTier]) {
       return c.json({ error: 'Plan upgrade required' }, 403);
     }
     await next();
