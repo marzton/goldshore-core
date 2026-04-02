@@ -7,3 +7,4 @@ const client = postgres(DATABASE_URL);
 export const db = drizzle(client, { schema });
 
 export * from './schema';
+export * from './schema.platform';
