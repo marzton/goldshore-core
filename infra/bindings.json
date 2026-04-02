@@ -4,7 +4,7 @@
     "name": "gs-platform-prod",
     "id": "YOUR_D1_DATABASE_ID",
     "provision_cmd": "wrangler d1 create gs-platform-prod",
-    "migrate_cmd": "wrangler d1 migrations apply gs-platform-prod --local"
+    "migrate_cmd": "wrangler d1 migrations apply gs-platform-prod --config apps/admin-dashboard/wrangler.toml"
   },
   "kv": {
     "name": "INFRA_SECRETS",

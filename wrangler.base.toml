@@ -28,7 +28,16 @@
 # wrangler kv:key put --namespace-id=<id> JWT_SECRET           <value>
 #
 # ── D1 migrations ────────────────────────────────────────────────────────────
-# wrangler d1 migrations apply gs-platform-prod
-#   Migration files live in packages/db/drizzle/
-#     0000_greedy_silverclaw.sql  — core trading schema (PostgreSQL, existing)
-#     0001_platform_tables.sql    — platform schema (D1/SQLite)
+# D1-compatible SQL lives in packages/db/migrations/d1/ (SQLite-safe only).
+# PostgreSQL migrations (packages/db/drizzle/) must NOT be passed to wrangler.
+#
+# Run migrations against the remote D1 instance:
+#   wrangler d1 migrations apply gs-platform-prod \
+#     --config apps/admin-dashboard/wrangler.toml
+#
+# The admin-dashboard wrangler.toml declares:
+#   migrations_dir = "../../packages/db/migrations/d1"
+# so the --config flag above is sufficient (no separate --migrations-dir needed).
+#
+# Migration files in packages/db/migrations/d1/:
+#   0001_platform_tables.sql  — users, inquiries, signals, audit_logs (D1/SQLite)
