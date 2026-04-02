@@ -1,0 +1,89 @@
+---
+// Gold Shore AI — Agency Marketing Landing Page
+// Inquiry submissions are logged to gs-platform-prod D1 via the CF binding.
+
+const { DB } = Astro.locals.runtime.env;
+
+let submitted = false;
+let error = '';
+
+if (Astro.request.method === 'POST') {
+  try {
+    const form = await Astro.request.formData();
+    const question = String(form.get('question') ?? '').trim();
+
+    if (question) {
+      await DB.prepare(
+        `INSERT INTO inquiries (id, user_id, source, question, created_at)
+         VALUES (?, 'anonymous', 'goldshore-ai', ?, ?)`,
+      )
+        .bind(crypto.randomUUID(), question, Date.now())
+        .run();
+
+      await DB.prepare(
+        `INSERT INTO audit_logs (id, user_id, app, action, metadata, created_at)
+         VALUES (?, NULL, 'goldshore-ai', 'inquiry_submitted', ?, ?)`,
+      )
+        .bind(crypto.randomUUID(), JSON.stringify({ question }), Date.now())
+        .run();
+
+      submitted = true;
+    }
+  } catch (e) {
+    error = 'Failed to submit inquiry. Please try again.';
+  }
+}
+---
+
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Gold Shore AI — Unified Infrastructure &amp; Agency Gateway</title>
+    <meta
+      name="description"
+      content="Gold Shore AI is a high-performance SaaS ecosystem powered by Cloudflare Workers and D1."
+    />
+  </head>
+  <body class="bg-black text-white font-mono min-h-screen p-8">
+    <header class="mb-12">
+      <h1 class="text-4xl font-bold tracking-tight">🏛️ Gold Shore AI</h1>
+      <p class="mt-2 text-zinc-400">Unified Infrastructure &amp; Agency Gateway</p>
+    </header>
+
+    <main class="max-w-2xl">
+      <section class="mb-10">
+        <h2 class="text-xl font-semibold mb-4">Submit an Inquiry</h2>
+        {submitted && (
+          <p class="mb-4 text-green-400">✓ Inquiry received. Our team will follow up shortly.</p>
+        )}
+        {error && <p class="mb-4 text-red-400">{error}</p>}
+        <form method="POST" class="flex flex-col gap-4">
+          <textarea
+            name="question"
+            rows="4"
+            placeholder="How can Gold Shore help your agency?"
+            class="bg-zinc-900 border border-zinc-700 rounded p-3 text-white resize-none"
+            required
+          ></textarea>
+          <button
+            type="submit"
+            class="bg-white text-black font-bold py-2 px-6 rounded hover:bg-zinc-200 transition w-fit"
+          >
+            Submit
+          </button>
+        </form>
+      </section>
+
+      <section>
+        <h2 class="text-xl font-semibold mb-4">Ecosystem</h2>
+        <ul class="list-disc list-inside text-zinc-300 space-y-1">
+          <li><strong>banproof.me</strong> — Durable Signal Engine (Risk Radar / Political Quant)</li>
+          <li><strong>goldshore.ai</strong> — Agency Marketing &amp; Inquiry Gateway</li>
+          <li><strong>admin dashboard</strong> — Sudo Control Panel</li>
+        </ul>
+      </section>
+    </main>
+  </body>
+</html>
