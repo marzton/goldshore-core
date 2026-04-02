@@ -35,6 +35,10 @@ api.post('/scan', requirePlanTier('pro'), async (c) => {
     return c.json({ error: 'type and symbol are required' }, 400);
   }
 
+  const allowedTypes = ['risk_radar', 'political_quant'] as const;
+  if (!allowedTypes.includes(body.type as (typeof allowedTypes)[number])) {
+    return c.json({ error: 'Invalid type. Supported types are risk_radar and political_quant' }, 400);
+  }
   const instance = await c.env.BANPROOF_ENGINE.create({
     params: { userId: user.id, type: body.type, symbol: body.symbol },
   });
