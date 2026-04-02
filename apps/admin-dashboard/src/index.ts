@@ -4,7 +4,6 @@ import { authMiddleware, requireRole, type GsUser } from '@goldshore/identity';
 type Bindings = {
   DB: D1Database;
   INFRA_SECRETS: KVNamespace;
-  JWT_SECRET: string;
 };
 
 type Variables = {
@@ -19,7 +18,11 @@ app.get('/', (c) => c.json({ service: 'goldshore-admin', status: 'ok' }));
 
 const admin = new Hono<{ Bindings: Bindings; Variables: Variables }>();
 
-admin.use('*', (c, next) => authMiddleware(c.env.JWT_SECRET)(c, next));
+admin.use('*', async (c, next) => {
+  const secret = await c.env.INFRA_SECRETS.get('JWT_SECRET');
+  if (!secret) return c.json({ error: 'Server misconfiguration' }, 500);
+  return authMiddleware(secret)(c, next);
+});
 admin.use('*', requireRole('sudo'));
 
 // List all users

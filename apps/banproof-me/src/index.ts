@@ -6,7 +6,6 @@ type Bindings = {
   DB: D1Database;
   INFRA_SECRETS: KVNamespace;
   BANPROOF_ENGINE: Workflow;
-  JWT_SECRET: string;
 };
 
 type Variables = {
@@ -21,7 +20,11 @@ app.get('/', (c) => c.json({ service: 'banproof-me', status: 'ok' }));
 
 const api = new Hono<{ Bindings: Bindings; Variables: Variables }>();
 
-api.use('*', (c, next) => authMiddleware(c.env.JWT_SECRET)(c, next));
+api.use('*', async (c, next) => {
+  const secret = await c.env.INFRA_SECRETS.get('JWT_SECRET');
+  if (!secret) return c.json({ error: 'Server misconfiguration' }, 500);
+  return authMiddleware(secret)(c, next);
+});
 
 // Risk Radar scan — requires Pro or Agency tier
 api.post('/scan', requirePlanTier('pro'), async (c) => {
