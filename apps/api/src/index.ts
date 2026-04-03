@@ -192,14 +192,3 @@ const MOCK_PORTFOLIO_OVERVIEW = {
 app.get('/portfolio/overview', (c) => {
   return c.json(MOCK_PORTFOLIO_OVERVIEW)
 })
-
-const port = process.env.PORT ? Number(process.env.PORT) : 3000
-console.log(`Server is running on port ${port}`)
-
-if (process.env.NODE_ENV !== 'test') {
-  console.log(`Server is running on port ${port}`)
-  serve({
-    fetch: app.fetch,
-    port
-  })
-}
