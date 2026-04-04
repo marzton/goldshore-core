@@ -1,4 +1,4 @@
-import { pgTable, text, timestamp, boolean, integer, doublePrecision, pgEnum } from 'drizzle-orm/pg-core';
+import { pgTable, text, timestamp, boolean, integer, doublePrecision, pgEnum, jsonb, real } from 'drizzle-orm/pg-core';
 
 export const brokerEnum = pgEnum('broker', ['tos', 'fidelity', 'robinhood']);
 export const accountTypeEnum = pgEnum('account_type', ['IND', 'IRA', 'ROTH_IRA', 'CASH', 'MARGIN']);
@@ -9,6 +9,7 @@ export const orderTypeEnum = pgEnum('order_type', ['market', 'limit', 'stop', 's
 export const tifEnum = pgEnum('tif', ['day', 'gtc']);
 export const assetTypeEnum = pgEnum('asset_type', ['equity', 'option', 'etf']);
 export const optionTypeEnum = pgEnum('option_type', ['call', 'put']);
+export const marketSignalTypeEnum = pgEnum('market_signal_type', ['political', 'risk']);
 
 export const accounts = pgTable('accounts', {
   id: text('id').primaryKey(),
@@ -67,4 +68,12 @@ export const orders = pgTable('orders', {
   stopPrice: doublePrecision('stop_price'),
   submittedAt: timestamp('submitted_at'),
   filledAt: timestamp('filled_at'),
+});
+
+export const marketSignals = pgTable('market_signals', {
+  id: text('id').primaryKey(),
+  signalType: marketSignalTypeEnum('signal_type').notNull(),
+  score: real('score').notNull(),
+  metadata: jsonb('metadata').notNull().default({}),
+  createdAt: timestamp('created_at').notNull().defaultNow(),
 });
