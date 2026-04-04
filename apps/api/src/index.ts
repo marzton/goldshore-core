@@ -1,8 +1,10 @@
 import { serve } from '@hono/node-server'
 import { Hono } from 'hono'
 import { Account, BalanceSnapshot, PositionSnapshot } from '@goldshore/types'
+import { escapeJson } from './utils.ts'
 
-const app = new Hono()
+export { escapeJson }
+export const app = new Hono()
 
 app.get('/', (c) => c.text('Goldshore API MVP'))
 
@@ -58,11 +60,7 @@ const PRE_SERIALIZED_BALANCE = (() => {
   return s.slice(0, -1) + `,"accountId":"`;
 })();
 
-const ID_REGEX = /^acc_[a-zA-Z0-9]+$/
-
-function escapeJson(s: string) {
-  return s.replace(/\\/g, '\\\\').replace(/"/g, '\\"');
-}
+export const ID_REGEX = /^acc_[a-zA-Z0-9]+$/
 
 app.get('/accounts/:id/balances/latest', (c) => {
   const id = c.req.param('id')
@@ -120,9 +118,12 @@ app.get('/portfolio/overview', (c) => {
 })
 
 const port = process.env.PORT ? Number(process.env.PORT) : 3000
-console.log(`Server is running on port ${port}`)
 
-serve({
-  fetch: app.fetch,
-  port
-})
+if (process.env.NODE_ENV !== 'test') {
+  console.log(`Server is running on port ${port}`)
+
+  serve({
+    fetch: app.fetch,
+    port
+  })
+}
