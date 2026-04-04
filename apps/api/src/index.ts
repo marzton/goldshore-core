@@ -61,7 +61,7 @@ const PRE_SERIALIZED_BALANCE = (() => {
 const ID_REGEX = /^acc_[a-zA-Z0-9]+$/
 
 function escapeJson(s: string) {
-  return s.replace(/\\/g, '\\\\').replace(/"/g, '\\"');
+  return JSON.stringify(s).slice(1, -1);
 }
 
 app.get('/accounts/:id/balances/latest', (c) => {
