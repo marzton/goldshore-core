@@ -61,6 +61,80 @@ admin.get('/inquiries', async (c) => {
   return c.json({ inquiries: result.results });
 });
 
+// Operator-facing reconciliation report with failed/duplicate/pending states
+admin.get('/reconciliation/report', async (c) => {
+  const status = c.req.query('status');
+
+  const report = status
+    ? await c.env.DB.prepare(
+        `SELECT id, category, status, reference_id, details, retry_attempts,
+                last_retry_at, created_at, updated_at
+           FROM reconciliation_reports
+          WHERE status = ?
+          ORDER BY updated_at DESC
+          LIMIT 500`,
+      )
+        .bind(status)
+        .all()
+    : await c.env.DB.prepare(
+        `SELECT id, category, status, reference_id, details, retry_attempts,
+                last_retry_at, created_at, updated_at
+           FROM reconciliation_reports
+          WHERE status IN ('failed', 'duplicate', 'pending')
+          ORDER BY updated_at DESC
+          LIMIT 500`,
+      ).all();
+
+  const counts = await c.env.DB.prepare(
+    `SELECT status, COUNT(*) AS total
+       FROM reconciliation_reports
+      GROUP BY status`,
+  ).all();
+
+  return c.json({
+    summary: counts.results,
+    records: report.results,
+  });
+});
+
+// Retry control for operators
+admin.post('/reconciliation/report/:id/retry', async (c) => {
+  const reportId = c.req.param('id');
+  const now = Date.now();
+
+  const existing = await c.env.DB.prepare(
+    'SELECT id, retry_attempts FROM reconciliation_reports WHERE id = ?',
+  )
+    .bind(reportId)
+    .first<{ id: string; retry_attempts: number }>();
+
+  if (!existing) {
+    return c.json({ error: 'Reconciliation record not found' }, 404);
+  }
+
+  await c.env.DB.prepare(
+    `UPDATE reconciliation_reports
+        SET retry_attempts = retry_attempts + 1,
+            last_retry_at = ?,
+            status = 'pending',
+            updated_at = ?
+      WHERE id = ?`,
+  )
+    .bind(now, now, reportId)
+    .run();
+
+  const updated = await c.env.DB.prepare(
+    `SELECT id, category, status, reference_id, details, retry_attempts,
+            last_retry_at, created_at, updated_at
+       FROM reconciliation_reports
+      WHERE id = ?`,
+  )
+    .bind(reportId)
+    .first();
+
+  return c.json({ record: updated });
+});
+
 // Update a user's role or plan tier
 admin.patch('/users/:id', async (c) => {
   const body = await c.req.json<{ role?: string; plan_tier?: string }>();
