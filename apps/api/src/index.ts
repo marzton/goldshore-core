@@ -100,22 +100,14 @@ const MOCK_ACCOUNTS: Omit<Account, 'createdAt' | 'updatedAt'>[] = [
   }
 ]
 
-const PRE_SERIALIZED_ACCOUNTS = MOCK_ACCOUNTS.map(acc => {
-  const s = JSON.stringify(acc);
-  return s.slice(0, -1) + `,"createdAt":"`;
-});
-
 app.get('/accounts', (c) => {
   const now = new Date().toISOString()
-  let res = '{"accounts":[';
-  for (let i = 0; i < PRE_SERIALIZED_ACCOUNTS.length; i++) {
-    res += PRE_SERIALIZED_ACCOUNTS[i] + now + `","updatedAt":"` + now + `"} `;
-    if (i < PRE_SERIALIZED_ACCOUNTS.length - 1) res += ',';
-  }
-  res += ']}';
-  return c.body(res, 200, {
-    'Content-Type': 'application/json'
-  })
+  const accounts = MOCK_ACCOUNTS.map(acc => ({
+    ...acc,
+    createdAt: now,
+    updatedAt: now
+  }))
+  return c.json({ accounts })
 })
 
 const MOCK_BALANCE: Omit<BalanceSnapshot, 'accountId' | 'timestamp'> = {
@@ -129,20 +121,15 @@ const MOCK_BALANCE: Omit<BalanceSnapshot, 'accountId' | 'timestamp'> = {
   marginUsed: 0
 }
 
-const PRE_SERIALIZED_BALANCE = (() => {
-  const s = JSON.stringify(MOCK_BALANCE);
-  return s.slice(0, -1) + `,"accountId":"`;
-})();
-
-export const ID_REGEX = /^acc_[a-zA-Z0-9]+$/
-
 app.get('/accounts/:id/balances/latest', (c) => {
   const id = c.req.param('id')
   const now = new Date().toISOString()
-  const escapedId = ID_REGEX.test(id) ? id : escapeJson(id);
-  const res = `{"balance":${PRE_SERIALIZED_BALANCE}${escapedId}","timestamp":"${now}"}}`;
-  return c.body(res, 200, {
-    'Content-Type': 'application/json'
+  return c.json({
+    balance: {
+      ...MOCK_BALANCE,
+      accountId: id,
+      timestamp: now
+    }
   })
 })
 
@@ -161,14 +148,15 @@ const MOCK_POSITIONS: Omit<PositionSnapshot, 'accountId' | 'timestamp'>[] = [
   }
 ]
 
-const PRE_SERIALIZED_POSITIONS = MOCK_POSITIONS.map(p => {
-  const s = JSON.stringify(p);
-  return s.slice(0, -1) + `,"accountId":"`;
-});
-
 app.get('/accounts/:id/positions', (c) => {
   const id = c.req.param('id')
   const now = new Date().toISOString()
+  const positions = MOCK_POSITIONS.map(p => ({
+    ...p,
+    accountId: id,
+    timestamp: now
+  }))
+  return c.json({ positions })
   const escapedId = ID_REGEX.test(id) ? id : escapeJson(id);
   const positions = PRE_SERIALIZED_POSITIONS.map(p => p + escapedId + '","timestamp":"' + now + '"} ');
   const res = '{"positions":[' + positions.join(',') + ']}';
@@ -191,9 +179,10 @@ const port = process.env.PORT ? Number(process.env.PORT) : 3000
 
 if (process.env.NODE_ENV !== 'test') {
   console.log(`Server is running on port ${port}`)
-
   serve({
     fetch: app.fetch,
     port
   })
 }
+
+export { app }
