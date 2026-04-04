@@ -8,6 +8,13 @@
       "when": 1773057704552,
       "tag": "0000_greedy_silverclaw",
       "breakpoints": true
+    },
+    {
+      "idx": 1,
+      "version": "5",
+      "when": 1743551521171,
+      "tag": "0001_market_signals",
+      "breakpoints": true
     }
   ]
 }
