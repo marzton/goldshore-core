@@ -1,9 +1,7 @@
 import { serve } from '@hono/node-server'
 import { Hono } from 'hono'
 import { Account, BalanceSnapshot, PositionSnapshot } from '@goldshore/types'
-import { escapeJson } from './utils.ts'
 
-export { escapeJson }
 export const app = new Hono()
 
 app.get('/', (c) => c.text('Goldshore API MVP'))
