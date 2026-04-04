@@ -1,0 +1,11 @@
+[vars]
+# Toggle for testing logic without burning API credits
+USE_MOCK = "true"
+ENVIRONMENT = "staging"
+
+[env.production]
+# Production-only D1 database binding
+[[env.production.d1_databases]]
+binding = "DB" # Points to gs-platform-prod
+database_name = "gs-platform-prod"
+database_id = "..."
