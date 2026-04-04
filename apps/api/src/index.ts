@@ -172,12 +172,8 @@ app.get('/accounts/:id/positions', (c) => {
   const id = c.req.param('id')
   const now = new Date().toISOString()
   const escapedId = ID_REGEX.test(id) ? id : escapeJson(id);
-  let res = '{"positions":[';
-  for (let i = 0; i < PRE_SERIALIZED_POSITIONS.length; i++) {
-    res += PRE_SERIALIZED_POSITIONS[i] + escapedId + `","timestamp":"` + now + `"} `;
-    if (i < PRE_SERIALIZED_POSITIONS.length - 1) res += ',';
-  }
-  res += ']}';
+  const positions = PRE_SERIALIZED_POSITIONS.map(p => p + escapedId + '","timestamp":"' + now + '"} ');
+  const res = '{"positions":[' + positions.join(',') + ']}';
   return c.body(res, 200, {
     'Content-Type': 'application/json'
   })
