@@ -1,9 +1,11 @@
 import { Hono } from 'hono';
 import { authMiddleware, requireRole, type GsUser } from '@goldshore/identity';
+import { callCoreFromEdge } from './core-adapter';
 
 type Bindings = {
   DB: D1Database;
   INFRA_SECRETS: KVNamespace;
+  CORE_API_BASE_URL: string;
 };
 
 type Variables = {
@@ -13,6 +15,20 @@ type Variables = {
 const app = new Hono<{ Bindings: Bindings; Variables: Variables }>();
 
 app.get('/', (c) => c.json({ service: 'goldshore-admin', status: 'ok' }));
+
+app.get('/core/ping', async (c) => {
+  if (!c.env.CORE_API_BASE_URL) return c.json({ error: 'CORE_API_BASE_URL is not configured' }, 503);
+
+  const response = await callCoreFromEdge(c.env.CORE_API_BASE_URL, '/', { method: 'GET' }, {
+    traceId: crypto.randomUUID(),
+    requestId: crypto.randomUUID(),
+    tenant: c.req.header('x-gs-tenant') ?? 'unknown',
+    authSubject: c.req.header('x-gs-auth-subject') ?? 'edge-service',
+  });
+
+  const payload = await response.text();
+  return c.body(payload, response.status, { 'Content-Type': response.headers.get('Content-Type') ?? 'application/json' });
+});
 
 // ── Sudo-gated admin routes ───────────────────────────────────────────────────
 
