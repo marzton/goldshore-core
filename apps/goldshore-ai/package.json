@@ -1,0 +1,23 @@
+{
+  "name": "goldshore-ai",
+  "version": "1.0.0",
+  "private": true,
+  "scripts": {
+    "dev": "astro dev",
+    "build": "astro build",
+    "preview": "astro preview",
+    "deploy": "wrangler pages deploy dist"
+  },
+  "dependencies": {
+    "astro": "^4.4.0",
+    "@astrojs/cloudflare": "^10.2.0",
+    "@astrojs/tailwind": "^5.1.0",
+    "tailwindcss": "^3.4.1",
+    "@goldshore/identity": "1.0.0"
+  },
+  "devDependencies": {
+    "@cloudflare/workers-types": "^4.20240208.0",
+    "wrangler": "^3.40.0",
+    "typescript": "^5.3.3"
+  }
+}
