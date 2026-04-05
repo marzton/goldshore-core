@@ -27,6 +27,7 @@ Managed via the `marzton` personal account to maximize free-tier Actions and sto
 - Git website-to-Cloudflare app ownership is tracked in `infra/cloudflare/git-website-alignment.json`.
 - Current required coverage: `goldshore-core`, `rmarston.github.io`, `banproof.me`, `armsway.com`, `goldshore`, `goldshore-ai`.
 - Run `npm run audit:websites` to catch duplicate active domains/app names before deploy.
+- `apps/goldshore-ai/package-lock.json` is committed so Cloudflare Pages `npm clean-install` works when the project root is set to that app directory.
 
 ## Edge/Core Observability
 
