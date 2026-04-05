@@ -1,0 +1,28 @@
+name: Legacy Traffic Report
+
+on:
+  schedule:
+    - cron: '0 14 * * 1' # Mondays at 14:00 UTC
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  report-legacy-traffic:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Generate report
+        run: node scripts/report/generate-legacy-traffic-report.mjs
+
+      - name: Publish job summary
+        run: cat artifacts/legacy-traffic-report.md >> "$GITHUB_STEP_SUMMARY"
+
+      - name: Upload report artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: legacy-traffic-report
+          path: artifacts/legacy-traffic-report.md
