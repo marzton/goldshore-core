@@ -1,0 +1,22 @@
+name: goldshore-ai-client-compat
+
+on:
+  pull_request:
+    paths:
+      - 'apps/goldshore-ai/**'
+      - 'packages/contracts/**'
+      - 'scripts/validate-client-compat.mjs'
+      - '.github/workflows/goldshore-ai-client-compat.yml'
+  push:
+    branches: [main]
+
+jobs:
+  check-client-compat:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20
+      - run: node packages/contracts/scripts/codegen.mjs --check
+      - run: node scripts/validate-client-compat.mjs
