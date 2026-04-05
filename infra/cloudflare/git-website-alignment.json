@@ -1,0 +1,131 @@
+{
+  "_comment": "Canonical mapping between Git repositories and Cloudflare website apps/domains.",
+  "generated_for": "goldshore consolidation",
+  "repos": [
+    {
+      "repo": "goldshore-core",
+      "cloudflare_apps": [
+        {
+          "name": "goldshore-core",
+          "type": "worker",
+          "domain": "core.goldshore.org",
+          "config": "apps/workers/wrangler.toml",
+          "status": "active"
+        },
+        {
+          "name": "banproof-me",
+          "type": "worker",
+          "domain": "banproof.me",
+          "config": "apps/banproof-me/wrangler.toml",
+          "status": "active"
+        },
+        {
+          "name": "goldshore-ai",
+          "type": "pages",
+          "domain": "goldshore.ai",
+          "config": "apps/goldshore-ai/wrangler.toml",
+          "status": "active"
+        },
+        {
+          "name": "goldshore-admin",
+          "type": "worker",
+          "domain": "admin.goldshore.org",
+          "config": "apps/admin-dashboard/wrangler.toml",
+          "status": "planned"
+        }
+      ]
+    },
+    {
+      "repo": "goldshore.org",
+      "cloudflare_apps": [
+        {
+          "name": "goldshore-web-router",
+          "type": "worker",
+          "domain": "goldshore.org",
+          "status": "active"
+        },
+        {
+          "name": "goldshore-api",
+          "type": "worker",
+          "domain": "api.goldshore.org",
+          "status": "canonical"
+        }
+      ]
+    },
+    {
+      "repo": "goldshore-ai",
+      "cloudflare_apps": [
+        {
+          "name": "gs-api",
+          "type": "worker",
+          "domain": "api.goldshore.ai",
+          "status": "active"
+        },
+        {
+          "name": "gs-web",
+          "type": "pages",
+          "domain": "www.goldshore.ai",
+          "status": "active"
+        }
+      ]
+    },
+    {
+      "repo": "goldshore-gateway",
+      "cloudflare_apps": [
+        {
+          "name": "gs-gateway",
+          "type": "worker",
+          "domain": "gateway.goldshore.org",
+          "status": "active"
+        },
+        {
+          "name": "goldshore-control-worker",
+          "type": "worker",
+          "domain": "services.goldshore.org",
+          "status": "active"
+        }
+      ]
+    },
+    {
+      "repo": "goldshore-admin",
+      "cloudflare_apps": [
+        {
+          "name": "goldshore-admin",
+          "type": "pages",
+          "domain": "admin.goldshore.org",
+          "status": "active"
+        }
+      ]
+    },
+    {
+      "repo": "goldshore-api",
+      "cloudflare_apps": [
+        {
+          "name": "goldshore-dashboard",
+          "type": "pages",
+          "domain": "dashboard.goldshore.org",
+          "status": "orphaned"
+        }
+      ]
+    },
+    {
+      "repo": "goldshore.github.io",
+      "cloudflare_apps": [
+        {
+          "name": "rmarston-github-io",
+          "type": "pages",
+          "domain": "rmarston.github.io",
+          "status": "legacy"
+        }
+      ]
+    }
+  ],
+  "rules": {
+    "no_duplicate_domain_across_active_apps": true,
+    "no_duplicate_app_name_across_active_apps": true,
+    "single_canonical_api_per_domain": [
+      "api.goldshore.org",
+      "api.goldshore.ai"
+    ]
+  }
+}
