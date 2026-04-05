@@ -23,3 +23,4 @@ Managed via the `marzton` personal account to maximize free-tier Actions and sto
 
 - Telemetry envelope + dashboard query definitions: `docs/edge-core-observability.md`
 - CI/CD rollout promotion gates: `docs/ci-cd-rollout-gates.md`
+- Sprint 1 execution backlog: `docs/planning/sprint-1-execution.md`
