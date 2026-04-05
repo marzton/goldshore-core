@@ -1,0 +1,10 @@
+{
+  "baseline": "1.4.2",
+  "nextVersion": "1.5.0",
+  "diff": {
+    "level": "additive",
+    "added": [
+      "GET /positions"
+    ]
+  }
+}
