@@ -11,6 +11,7 @@ const repos = data?.repos ?? [];
 const appIndex = new Map();
 const domainIndex = new Map();
 const errors = [];
+const repoNames = new Set();
 
 function isActive(status) {
   return ['active', 'canonical'].includes(status);
@@ -21,6 +22,7 @@ for (const repoEntry of repos) {
     errors.push('Repo entry is missing `repo` name.');
     continue;
   }
+  repoNames.add(repoEntry.repo);
 
   const apps = repoEntry.cloudflare_apps ?? [];
   for (const app of apps) {
@@ -46,6 +48,12 @@ for (const repoEntry of repos) {
     const byDomain = domainIndex.get(app.domain) ?? [];
     byDomain.push({ repo: repoEntry.repo, name: app.name, status: app.status });
     domainIndex.set(app.domain, byDomain);
+  }
+}
+
+for (const requiredRepo of data?.rules?.required_repos ?? []) {
+  if (!repoNames.has(requiredRepo)) {
+    errors.push(`Missing required repo mapping '${requiredRepo}'.`);
   }
 }
 

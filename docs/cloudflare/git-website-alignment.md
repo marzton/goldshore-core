@@ -13,6 +13,7 @@ This runbook keeps Cloudflare website applications aligned with their source Git
 - Two active repos deploying the same app name.
 - Two active apps targeting the same domain.
 - Multiple active API apps for canonical domains (`api.goldshore.org`, `api.goldshore.ai`).
+- Missing assignment coverage for required repos: `goldshore-core`, `rmarston.github.io`, `banproof.me`, `armsway.com`, `goldshore`, `goldshore-ai`.
 
 ## Workflow
 

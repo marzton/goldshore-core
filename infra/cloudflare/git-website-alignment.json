@@ -1,42 +1,59 @@
 {
-  "_comment": "Canonical mapping between Git repositories and Cloudflare website apps/domains.",
-  "generated_for": "goldshore consolidation",
+  "_comment": "Canonical mapping of Git repositories to Cloudflare applications/domains.",
   "repos": [
     {
       "repo": "goldshore-core",
+      "url": "https://github.com/marzton/goldshore-core.git",
       "cloudflare_apps": [
         {
           "name": "goldshore-core",
           "type": "worker",
           "domain": "core.goldshore.org",
-          "config": "apps/workers/wrangler.toml",
-          "status": "active"
-        },
-        {
-          "name": "banproof-me",
-          "type": "worker",
-          "domain": "banproof.me",
-          "config": "apps/banproof-me/wrangler.toml",
-          "status": "active"
-        },
-        {
-          "name": "goldshore-ai",
-          "type": "pages",
-          "domain": "goldshore.ai",
-          "config": "apps/goldshore-ai/wrangler.toml",
-          "status": "active"
-        },
-        {
-          "name": "goldshore-admin",
-          "type": "worker",
-          "domain": "admin.goldshore.org",
-          "config": "apps/admin-dashboard/wrangler.toml",
-          "status": "planned"
+          "status": "active",
+          "config": "apps/workers/wrangler.toml"
         }
       ]
     },
     {
-      "repo": "goldshore.org",
+      "repo": "rmarston.github.io",
+      "url": "https://github.com/marzton/rmarston.github.io.git",
+      "cloudflare_apps": [
+        {
+          "name": "rmarston-github-io",
+          "type": "pages",
+          "domain": "rmarston.github.io",
+          "status": "active"
+        }
+      ]
+    },
+    {
+      "repo": "banproof.me",
+      "url": "https://github.com/marzton/banproof.me.git",
+      "cloudflare_apps": [
+        {
+          "name": "banproof-me",
+          "type": "worker",
+          "domain": "banproof.me",
+          "status": "active",
+          "config": "apps/banproof-me/wrangler.toml"
+        }
+      ]
+    },
+    {
+      "repo": "armsway.com",
+      "url": "https://github.com/marzton/armsway.com.git",
+      "cloudflare_apps": [
+        {
+          "name": "armsway-com",
+          "type": "pages",
+          "domain": "armsway.com",
+          "status": "active"
+        }
+      ]
+    },
+    {
+      "repo": "goldshore",
+      "url": "https://github.com/marzton/goldshore.git",
       "cloudflare_apps": [
         {
           "name": "goldshore-web-router",
@@ -49,17 +66,24 @@
           "type": "worker",
           "domain": "api.goldshore.org",
           "status": "canonical"
+        },
+        {
+          "name": "goldshore-org-pages",
+          "type": "pages",
+          "domain": "www.goldshore.org",
+          "status": "active"
         }
       ]
     },
     {
       "repo": "goldshore-ai",
+      "url": "https://github.com/marzton/goldshore-ai.git",
       "cloudflare_apps": [
         {
           "name": "gs-api",
           "type": "worker",
           "domain": "api.goldshore.ai",
-          "status": "active"
+          "status": "canonical"
         },
         {
           "name": "gs-web",
@@ -68,59 +92,17 @@
           "status": "active"
         }
       ]
-    },
-    {
-      "repo": "goldshore-gateway",
-      "cloudflare_apps": [
-        {
-          "name": "gs-gateway",
-          "type": "worker",
-          "domain": "gateway.goldshore.org",
-          "status": "active"
-        },
-        {
-          "name": "goldshore-control-worker",
-          "type": "worker",
-          "domain": "services.goldshore.org",
-          "status": "active"
-        }
-      ]
-    },
-    {
-      "repo": "goldshore-admin",
-      "cloudflare_apps": [
-        {
-          "name": "goldshore-admin",
-          "type": "pages",
-          "domain": "admin.goldshore.org",
-          "status": "active"
-        }
-      ]
-    },
-    {
-      "repo": "goldshore-api",
-      "cloudflare_apps": [
-        {
-          "name": "goldshore-dashboard",
-          "type": "pages",
-          "domain": "dashboard.goldshore.org",
-          "status": "orphaned"
-        }
-      ]
-    },
-    {
-      "repo": "goldshore.github.io",
-      "cloudflare_apps": [
-        {
-          "name": "rmarston-github-io",
-          "type": "pages",
-          "domain": "rmarston.github.io",
-          "status": "legacy"
-        }
-      ]
     }
   ],
   "rules": {
+    "required_repos": [
+      "goldshore-core",
+      "rmarston.github.io",
+      "banproof.me",
+      "armsway.com",
+      "goldshore",
+      "goldshore-ai"
+    ],
     "no_duplicate_domain_across_active_apps": true,
     "no_duplicate_app_name_across_active_apps": true,
     "single_canonical_api_per_domain": [
