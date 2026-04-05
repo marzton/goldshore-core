@@ -16,7 +16,9 @@
     "deploy:banproof": "npm run deploy --workspace=apps/banproof-me",
     "deploy:goldshore-ai": "npm run deploy --workspace=apps/goldshore-ai",
     "deploy:admin": "npm run deploy --workspace=apps/admin-dashboard",
-    "migrate": "wrangler d1 migrations apply gs-platform-prod --config apps/admin-dashboard/wrangler.toml"
+    "migrate": "wrangler d1 migrations apply gs-platform-prod --config apps/admin-dashboard/wrangler.toml",
+    "audit:cloudflare": "node scripts/cloudflare/audit-bindings.mjs",
+    "audit:websites": "node scripts/cloudflare/validate-git-website-alignment.mjs"
   },
   "devDependencies": {
     "typescript": "^5.3.3",
