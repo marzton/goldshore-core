@@ -24,14 +24,22 @@ const MOCK_ACCOUNTS: Omit<Account, 'createdAt' | 'updatedAt'>[] = [
   }
 ]
 
+const PRE_SERIALIZED_ACCOUNTS = MOCK_ACCOUNTS.map(acc => {
+  const s = JSON.stringify(acc);
+  return s.slice(0, -1) + `,"createdAt":"`;
+});
+
 app.get('/accounts', (c) => {
   const now = new Date().toISOString()
-  const accounts = MOCK_ACCOUNTS.map(acc => ({
-    ...acc,
-    createdAt: now,
-    updatedAt: now
-  }))
-  return c.json({ accounts })
+  let res = '{"accounts":[';
+  for (let i = 0; i < PRE_SERIALIZED_ACCOUNTS.length; i++) {
+    res += PRE_SERIALIZED_ACCOUNTS[i] + now + `","updatedAt":"` + now + `"} `;
+    if (i < PRE_SERIALIZED_ACCOUNTS.length - 1) res += ',';
+  }
+  res += ']}';
+  return c.body(res, 200, {
+    'Content-Type': 'application/json'
+  })
 })
 
 const MOCK_BALANCE: Omit<BalanceSnapshot, 'accountId' | 'timestamp'> = {
@@ -45,14 +53,25 @@ const MOCK_BALANCE: Omit<BalanceSnapshot, 'accountId' | 'timestamp'> = {
   marginUsed: 0
 }
 
+const PRE_SERIALIZED_BALANCE = (() => {
+  const s = JSON.stringify(MOCK_BALANCE);
+  return s.slice(0, -1) + `,"accountId":"`;
+})();
+
+const ID_REGEX = /^acc_[a-zA-Z0-9]+$/
+
+function escapeJson(s: string) {
+  return s.replace(/\\/g, '\\\\').replace(/"/g, '\\"');
+}
+
 app.get('/accounts/:id/balances/latest', (c) => {
   const id = c.req.param('id')
-  const balance: BalanceSnapshot = {
-    ...MOCK_BALANCE,
-    accountId: id,
-    timestamp: new Date().toISOString(),
-  }
-  return c.json({ balance })
+  const now = new Date().toISOString()
+  const escapedId = ID_REGEX.test(id) ? id : escapeJson(id);
+  const res = `{"balance":${PRE_SERIALIZED_BALANCE}${escapedId}","timestamp":"${now}"}}`;
+  return c.body(res, 200, {
+    'Content-Type': 'application/json'
+  })
 })
 
 const MOCK_POSITIONS: Omit<PositionSnapshot, 'accountId' | 'timestamp'>[] = [
@@ -70,15 +89,24 @@ const MOCK_POSITIONS: Omit<PositionSnapshot, 'accountId' | 'timestamp'>[] = [
   }
 ]
 
+const PRE_SERIALIZED_POSITIONS = MOCK_POSITIONS.map(p => {
+  const s = JSON.stringify(p);
+  return s.slice(0, -1) + `,"accountId":"`;
+});
+
 app.get('/accounts/:id/positions', (c) => {
   const id = c.req.param('id')
-  const timestamp = new Date().toISOString()
-  const positions: PositionSnapshot[] = MOCK_POSITIONS.map(p => ({
-    ...p,
-    accountId: id,
-    timestamp
-  }))
-  return c.json({ positions })
+  const now = new Date().toISOString()
+  const escapedId = ID_REGEX.test(id) ? id : escapeJson(id);
+  let res = '{"positions":[';
+  for (let i = 0; i < PRE_SERIALIZED_POSITIONS.length; i++) {
+    res += PRE_SERIALIZED_POSITIONS[i] + escapedId + `","timestamp":"` + now + `"} `;
+    if (i < PRE_SERIALIZED_POSITIONS.length - 1) res += ',';
+  }
+  res += ']}';
+  return c.body(res, 200, {
+    'Content-Type': 'application/json'
+  })
 })
 
 const MOCK_PORTFOLIO_OVERVIEW = {
