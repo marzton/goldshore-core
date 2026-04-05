@@ -73,6 +73,16 @@ const MOCK_ACCOUNTS: Omit<Account, 'createdAt' | 'updatedAt'>[] = [
   },
 ]
 
+app.get('/accounts', (c) => {
+  const now = new Date().toISOString()
+  const accounts = MOCK_ACCOUNTS.map(acc => ({
+    ...acc,
+    createdAt: now,
+    updatedAt: now
+  }))
+  return c.json({ accounts })
+})
+
 const MOCK_BALANCE: Omit<BalanceSnapshot, 'accountId' | 'timestamp'> = {
   id: 'bal_123',
   netLiq: 54000.5,
@@ -83,6 +93,18 @@ const MOCK_BALANCE: Omit<BalanceSnapshot, 'accountId' | 'timestamp'> = {
   maintenanceExcess: 25000.0,
   marginUsed: 0,
 }
+
+app.get('/accounts/:id/balances/latest', (c) => {
+  const id = c.req.param('id')
+  const now = new Date().toISOString()
+  return c.json({
+    balance: {
+      ...MOCK_BALANCE,
+      accountId: id,
+      timestamp: now
+    }
+  })
+})
 
 const MOCK_POSITIONS: Omit<PositionSnapshot, 'accountId' | 'timestamp'>[] = [
   {
@@ -99,21 +121,21 @@ const MOCK_POSITIONS: Omit<PositionSnapshot, 'accountId' | 'timestamp'>[] = [
   },
 ]
 
-app.get('/', (c) => c.text('Goldshore API MVP'))
-
-app.get('/accounts', (c) => {
+app.get('/accounts/:id/positions', (c) => {
+  const id = c.req.param('id')
   const now = new Date().toISOString()
-  const accounts: Account[] = MOCK_ACCOUNTS.map((account) => ({ ...account, createdAt: now, updatedAt: now }))
-  return c.json({ accounts })
-})
-
-app.get('/accounts/:id/balances/latest', (c) => {
-  const balance: BalanceSnapshot = {
-    ...MOCK_BALANCE,
-    accountId: c.req.param('id'),
-    timestamp: new Date().toISOString(),
-  }
-  return c.json({ balance })
+  const positions = MOCK_POSITIONS.map(p => ({
+    ...p,
+    accountId: id,
+    timestamp: now
+  }))
+  return c.json({ positions })
+  const escapedId = ID_REGEX.test(id) ? id : escapeJson(id);
+  const positions = PRE_SERIALIZED_POSITIONS.map(p => p + escapedId + '","timestamp":"' + now + '"} ');
+  const res = '{"positions":[' + positions.join(',') + ']}';
+  return c.body(res, 200, {
+    'Content-Type': 'application/json'
+  })
 })
 
 app.get('/accounts/:id/positions', (c) => {
@@ -143,3 +165,5 @@ if (process.env.NODE_ENV !== 'test') {
     port,
   })
 }
+
+export { app }
