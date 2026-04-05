@@ -13,8 +13,8 @@
     "@astrojs/cloudflare": "^10.2.0",
     "@astrojs/tailwind": "^5.1.0",
     "tailwindcss": "^3.4.1",
-    "@goldshore/identity": "1.0.0",
-    "@goldshore/api-client": "^1.4.2"
+    "@goldshore/identity": "file:../../packages/identity",
+    "@goldshore/api-client": "file:../../packages/contracts/generated/@goldshore/api-client"
   },
   "devDependencies": {
     "@cloudflare/workers-types": "^4.20240208.0",
