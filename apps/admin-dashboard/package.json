@@ -8,7 +8,7 @@
     "build": "tsc --noEmit"
   },
   "dependencies": {
-    "hono": "^4.12.7",
+    "hono": "^4.12.12",
     "@goldshore/identity": "1.0.0",
     "@goldshore/db": "1.0.0"
   },

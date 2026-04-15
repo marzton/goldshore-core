@@ -9,8 +9,8 @@
     "test": "NODE_ENV=test tsx --test src/index.test.ts src/auth.integration.test.ts"
   },
   "dependencies": {
-    "hono": "^4.12.7",
-    "@hono/node-server": "^1.8.2",
+    "hono": "^4.12.12",
+    "@hono/node-server": "^1.19.13",
     "@goldshore/types": "1.0.0",
     "@goldshore/db": "1.0.0",
     "@goldshore/auth": "1.0.0"

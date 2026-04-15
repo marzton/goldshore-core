@@ -16,7 +16,7 @@
     "@goldshore/types": "1.0.0",
     "framer-motion": "^11.0.0",
     "gsap": "^3.12.5",
-    "hono": "^4.12.7",
+    "hono": "^4.12.12",
     "react": "^18.2.0",
     "react-dom": "^18.2.0"
   },
