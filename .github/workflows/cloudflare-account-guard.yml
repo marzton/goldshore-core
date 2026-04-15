@@ -1,0 +1,54 @@
+name: Cloudflare Account Guard
+
+on:
+  pull_request:
+    branches: [main]
+  workflow_dispatch:
+
+jobs:
+  verify-account-resources:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - run: test -f ops/cloudflare-account-required.json
+      - name: Verify Cloudflare account secrets are present
+        env:
+          CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
+          CLOUDFLARE_ACCOUNT_ID: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
+        run: |
+          test -n "$CLOUDFLARE_API_TOKEN" || (echo "Missing CLOUDFLARE_API_TOKEN" && exit 1)
+          test -n "$CLOUDFLARE_ACCOUNT_ID" || (echo "Missing CLOUDFLARE_ACCOUNT_ID" && exit 1)
+      - name: Validate KV, D1, R2, and Queues
+        env:
+          CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
+          CLOUDFLARE_ACCOUNT_ID: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
+        run: |
+          python - <<'PY'
+          import json, os, urllib.request
+          def cf_get(url):
+              req = urllib.request.Request(url, headers={'Authorization': f"Bearer {os.environ['CLOUDFLARE_API_TOKEN']}", 'Content-Type': 'application/json'})
+              with urllib.request.urlopen(req) as resp:
+                  data = json.loads(resp.read().decode())
+              if not data.get('success'):
+                  raise SystemExit(f"Cloudflare API error for {url}: {data}")
+              return data['result']
+          cfg = json.load(open('ops/cloudflare-account-required.json', 'r', encoding='utf-8'))
+          account = os.environ['CLOUDFLARE_ACCOUNT_ID']
+          kv_titles = {ns.get('title') for ns in cf_get(f"https://api.cloudflare.com/client/v4/accounts/{account}/storage/kv/namespaces")}
+          for item in cfg.get('required_kv_namespaces', []):
+              if item not in kv_titles:
+                  raise SystemExit(f"Missing required KV namespace: {item}")
+          d1_names = {db.get('name') for db in cf_get(f"https://api.cloudflare.com/client/v4/accounts/{account}/d1/database")}
+          for item in cfg.get('required_d1_databases', []):
+              if item not in d1_names:
+                  raise SystemExit(f"Missing required D1 database: {item}")
+          r2_names = {b.get('name') for b in cf_get(f"https://api.cloudflare.com/client/v4/accounts/{account}/r2/buckets")}
+          for item in cfg.get('required_r2_buckets', []):
+              if item not in r2_names:
+                  raise SystemExit(f"Missing required R2 bucket: {item}")
+          queue_names = {q.get('queue_name') or q.get('name') for q in cf_get(f"https://api.cloudflare.com/client/v4/accounts/{account}/queues")}
+          for item in cfg.get('required_queues', []):
+              if item not in queue_names:
+                  raise SystemExit(f"Missing required Queue: {item}")
+          print('Cloudflare account guard passed.')
+          PY
