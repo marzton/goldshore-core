@@ -1,0 +1,54 @@
+{
+  "_comment": "Canonical Cloudflare bindings shared across this monorepo. IDs sourced from Cloudflare dashboard captures where fully visible.",
+  "d1": {
+    "primary": {
+      "name": "gs-platform-prod",
+      "id": "YOUR_D1_DATABASE_ID",
+      "provision_cmd": "wrangler d1 create gs-platform-prod",
+      "migrate_cmd": "wrangler d1 migrations apply gs-platform-prod --config apps/admin-dashboard/wrangler.toml",
+      "note": "Dashboard screenshot shows gs-platform-prod but UUID is truncated in UI; paste full UUID here."
+    },
+    "catalog": [
+      { "name": "goldshore-db-prod", "id": "UNKNOWN_TRUNCATED_IN_UI" },
+      { "name": "goldshore", "id": "UNKNOWN_TRUNCATED_IN_UI" },
+      { "name": "gs-platform-prod", "id": "YOUR_D1_DATABASE_ID" },
+      { "name": "bp-core-prod", "id": "UNKNOWN_TRUNCATED_IN_UI" }
+    ]
+  },
+  "kv": {
+    "primary": {
+      "name": "INFRA_SECRETS",
+      "id": "0c45009b68c944d6988a5268bdaa7361",
+      "provision_cmd": "wrangler kv:namespace create INFRA_SECRETS",
+      "secrets": [
+        "HUGGINGFACE_API_KEY",
+        "ODDS_API_KEY",
+        "DISCORD_BOT_TOKEN",
+        "JWT_SECRET"
+      ],
+      "put_example": "wrangler kv:key put --namespace-id=0c45009b68c944d6988a5268bdaa7361 HUGGINGFACE_API_KEY <value>"
+    },
+    "catalog": [
+      { "name": "banproof-cache", "id": "af8eb071fce34b5eafbdeb1badd93876" },
+      { "name": "GS_API_DATA", "id": "9cc2209906a94851b704be57543987a9" },
+      { "name": "gs_api_kv_001", "id": "6229af63c7b4470eb4244f17995ed0ce" },
+      { "name": "GS_CONFIG", "id": "5f13370575784c9dacff522121104cb3" },
+      { "name": "gs_control_logs_001", "id": "44814e2bc96a43eda231e0156c29b6c9" },
+      { "name": "INFRA_SECRETS", "id": "0c45009b68c944d6988a5268bdaa7361" },
+      { "name": "KV_CACHE", "id": "895b3586e1ce46c5b33f7a2fdbdad314" },
+      { "name": "KV_SESSIONS", "id": "d0b889d0ba314b42892f5b959356ceda" },
+      { "name": "rmarston.com", "id": "30ad09d3df9944dc8590fcbe230f6f5b" }
+    ]
+  },
+  "r2": {
+    "catalog": [
+      { "name": "gs-assets" },
+      { "name": "gs-assets-preview" }
+    ]
+  },
+  "apps": [
+    { "name": "banproof-me", "path": "apps/banproof-me", "type": "worker" },
+    { "name": "goldshore-ai", "path": "apps/goldshore-ai", "type": "pages" },
+    { "name": "goldshore-admin", "path": "apps/admin-dashboard", "type": "worker" }
+  ]
+}

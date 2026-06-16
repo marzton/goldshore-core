@@ -1,0 +1,11 @@
+{
+  "extends": "../../tsconfig.base.json",
+  "compilerOptions": {
+    "outDir": "dist",
+    "baseUrl": ".",
+    "paths": {
+      "@goldshore/contracts": ["../contracts/src"]
+    }
+  },
+  "include": ["src", "../contracts/src"]
+}
