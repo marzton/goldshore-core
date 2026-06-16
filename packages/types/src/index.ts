@@ -154,3 +154,32 @@ export interface ExecutionPlan {
   limitPrice: number | null;
   notes: string | null;
 }
+
+export type MarketSignalType = 'political' | 'risk';
+
+export interface MarketSignal {
+  id: string;
+  signalType: MarketSignalType;
+  /** Volatility or risk score in the range 0–100 */
+  score: number;
+  metadata: Record<string, unknown>;
+  createdAt: string;
+}
+
+export type RiskAssetClass = 'sports' | 'tcg' | 'equities';
+
+export interface RiskRadarSnapshot {
+  id: string;
+  accountId: string;
+  timestamp: string;
+  /** Total mark-to-market value at risk across all asset classes */
+  totalExposure: number;
+  /** Exposure broken out per asset class */
+  exposureByClass: Record<RiskAssetClass, number>;
+  /** 0–100 score: how quickly holdings can be converted to cash */
+  liquidityScore: number;
+  /** 0–100 composite threat level from market volatility + political instability */
+  externalThreatLevel: number;
+}
+
+export * from "./telemetry";

@@ -1,0 +1,20 @@
+{
+  "name": "admin-dashboard",
+  "version": "1.0.0",
+  "private": true,
+  "scripts": {
+    "dev": "wrangler dev",
+    "deploy": "wrangler deploy",
+    "build": "tsc --noEmit"
+  },
+  "dependencies": {
+    "hono": "^4.12.15",
+    "@goldshore/identity": "1.0.0",
+    "@goldshore/db": "1.0.0"
+  },
+  "devDependencies": {
+    "@cloudflare/workers-types": "^4.20240208.0",
+    "wrangler": "^4.84.1",
+    "typescript": "^5.3.3"
+  }
+}

@@ -1,0 +1,15 @@
+-- NOTE:
+-- This migration file previously contained a D1/SQLite platform schema
+-- (users, inquiries, signals, audit_logs) intended to be applied via:
+--   wrangler d1 migrations apply gs-platform-prod
+--
+-- However, files under packages/db/drizzle are used by the Postgres
+-- Drizzle migrator. Running the D1 schema here would incorrectly create
+-- D1 platform tables in the Postgres database and could diverge from
+-- the Postgres schema defined in schema.ts.
+--
+-- This migration has been intentionally left empty for Postgres.
+-- The D1-specific migration should live under:
+--   packages/db/migrations/d1
+--
+-- No-op migration for Postgres.
