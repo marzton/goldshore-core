@@ -16,7 +16,7 @@ CREATE TABLE IF NOT EXISTS users (
 
 CREATE TABLE IF NOT EXISTS inquiries (
   id         TEXT    PRIMARY KEY NOT NULL,
-  user_id    TEXT    NOT NULL REFERENCES users(id),
+  user_id    TEXT    REFERENCES users(id),
   source     TEXT    NOT NULL DEFAULT 'goldshore-ai',
   question   TEXT    NOT NULL,
   response   TEXT,

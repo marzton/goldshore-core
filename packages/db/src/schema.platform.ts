@@ -20,9 +20,7 @@ export const users = sqliteTable('users', {
 
 export const inquiries = sqliteTable('inquiries', {
   id: text('id').primaryKey(),
-  userId: text('user_id')
-    .notNull()
-    .references(() => users.id),
+  userId: text('user_id').references(() => users.id),
   source: text('source').notNull().default('goldshore-ai'),
   question: text('question').notNull(),
   response: text('response'),

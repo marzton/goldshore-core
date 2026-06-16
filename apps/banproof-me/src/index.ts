@@ -1,10 +1,12 @@
 import { Hono } from 'hono';
 import { authMiddleware, requirePlanTier, type GsUser } from '@goldshore/identity';
 import { BanproofEngine, type ScanParams } from './workflow';
+import { callCoreFromEdge } from './core-adapter';
 
 type Bindings = {
   DB: D1Database;
   INFRA_SECRETS: KVNamespace;
+  CORE_API_BASE_URL: string;
   BANPROOF_ENGINE: Workflow;
 };
 
@@ -15,6 +17,20 @@ type Variables = {
 const app = new Hono<{ Bindings: Bindings; Variables: Variables }>();
 
 app.get('/', (c) => c.json({ service: 'banproof-me', status: 'ok' }));
+
+app.get('/core/ping', async (c) => {
+  if (!c.env.CORE_API_BASE_URL) return c.json({ error: 'CORE_API_BASE_URL is not configured' }, 503);
+
+  const response = await callCoreFromEdge(c.env.CORE_API_BASE_URL, '/', { method: 'GET' }, {
+    traceId: crypto.randomUUID(),
+    requestId: crypto.randomUUID(),
+    tenant: c.req.header('x-gs-tenant') ?? 'unknown',
+    authSubject: c.req.header('x-gs-auth-subject') ?? 'edge-service',
+  });
+
+  const payload = await response.text();
+  return c.body(payload, response.status, { 'Content-Type': response.headers.get('Content-Type') ?? 'application/json' });
+});
 
 // ── Authenticated routes ───────────────────────────────────────────────────────
 
@@ -35,6 +51,10 @@ api.post('/scan', requirePlanTier('pro'), async (c) => {
     return c.json({ error: 'type and symbol are required' }, 400);
   }
 
+  const allowedTypes = ['risk_radar', 'political_quant'] as const;
+  if (!allowedTypes.includes(body.type as (typeof allowedTypes)[number])) {
+    return c.json({ error: 'Invalid type. Supported types are risk_radar and political_quant' }, 400);
+  }
   const instance = await c.env.BANPROOF_ENGINE.create({
     params: { userId: user.id, type: body.type, symbol: body.symbol },
   });

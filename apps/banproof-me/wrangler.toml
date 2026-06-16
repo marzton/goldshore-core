@@ -1,11 +1,30 @@
+name = "banproof-me"
+main = "src/index.ts"
+compatibility_date = "2026-04-02"
+workers_dev = false
+
 [vars]
 # Toggle for testing logic without burning API credits
 USE_MOCK = "true"
 ENVIRONMENT = "staging"
 
 [env.production]
+
+[[env.production.routes]]
+pattern = "banproof.me/*"
+zone_name = "banproof.me"
+
+[[env.production.routes]]
+pattern = "www.banproof.me/*"
+zone_name = "banproof.me"
+
 # Production-only D1 database binding
 [[env.production.d1_databases]]
 binding = "DB" # Points to gs-platform-prod
 database_name = "gs-platform-prod"
-database_id = "..."
+database_id = "YOUR_D1_DATABASE_ID"
+
+# Shared KV namespace for runtime secrets
+[[env.production.kv_namespaces]]
+binding = "INFRA_SECRETS"
+id = "0c45009b68c944d6988a5268bdaa7361"

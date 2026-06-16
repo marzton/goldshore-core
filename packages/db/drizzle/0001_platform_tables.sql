@@ -1,45 +1,15 @@
--- D1 Platform Schema — gs-platform-prod
--- Tables: users, inquiries, signals, audit_logs
--- Apply via: wrangler d1 migrations apply gs-platform-prod
-
-CREATE TABLE IF NOT EXISTS users (
-  id           TEXT    PRIMARY KEY NOT NULL,
-  email        TEXT    NOT NULL UNIQUE,
-  password_hash TEXT   NOT NULL,
-  role         TEXT    NOT NULL DEFAULT 'user'
-                       CHECK(role IN ('user', 'admin', 'sudo')),
-  plan_tier    TEXT    NOT NULL DEFAULT 'free'
-                       CHECK(plan_tier IN ('free', 'pro', 'agency')),
-  created_at   INTEGER NOT NULL,
-  updated_at   INTEGER NOT NULL
-);
-
-CREATE TABLE IF NOT EXISTS inquiries (
-  id         TEXT    PRIMARY KEY NOT NULL,
-  user_id    TEXT    NOT NULL REFERENCES users(id),
-  source     TEXT    NOT NULL DEFAULT 'goldshore-ai',
-  question   TEXT    NOT NULL,
-  response   TEXT,
-  created_at INTEGER NOT NULL
-);
-
-CREATE TABLE IF NOT EXISTS signals (
-  id         TEXT    PRIMARY KEY NOT NULL,
-  user_id    TEXT    NOT NULL REFERENCES users(id),
-  type       TEXT    NOT NULL
-             CHECK(type IN ('risk_radar', 'political_quant')),
-  symbol     TEXT,
-  sentiment  TEXT,
-  odds_data  TEXT,
-  result     TEXT,
-  created_at INTEGER NOT NULL
-);
-
-CREATE TABLE IF NOT EXISTS audit_logs (
-  id         TEXT    PRIMARY KEY NOT NULL,
-  user_id    TEXT,
-  app        TEXT    NOT NULL,
-  action     TEXT    NOT NULL,
-  metadata   TEXT,
-  created_at INTEGER NOT NULL
-);
+-- NOTE:
+-- This migration file previously contained a D1/SQLite platform schema
+-- (users, inquiries, signals, audit_logs) intended to be applied via:
+--   wrangler d1 migrations apply gs-platform-prod
+--
+-- However, files under packages/db/drizzle are used by the Postgres
+-- Drizzle migrator. Running the D1 schema here would incorrectly create
+-- D1 platform tables in the Postgres database and could diverge from
+-- the Postgres schema defined in schema.ts.
+--
+-- This migration has been intentionally left empty for Postgres.
+-- The D1-specific migration should live under:
+--   packages/db/migrations/d1
+--
+-- No-op migration for Postgres.
