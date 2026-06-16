@@ -20,9 +20,9 @@ zone_name = "banproof.me"
 
 # Production-only D1 database binding
 [[env.production.d1_databases]]
-binding = "DB" # Points to gs-platform-prod
-database_name = "gs-platform-prod"
-database_id = "YOUR_D1_DATABASE_ID"
+binding = "DB"
+database_name = "gs_platform_db"
+database_id = "9703574e-adb7-481e-8d98-96f8ce5f8a90"
 
 # Shared KV namespace for runtime secrets
 [[env.production.kv_namespaces]]
