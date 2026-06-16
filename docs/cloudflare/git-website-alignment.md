@@ -31,3 +31,8 @@ This runbook keeps Cloudflare website applications aligned with their source Git
 - `planned`: intended destination during migration.
 - `legacy`: old app still present but not authoritative.
 - `orphaned`: app found in config/history and should be retired.
+
+## Manual cutover gate
+
+For the current `.ai`/`.org` transition, use the dashboard-only sequence in `docs/cloudflare/manual-cutover-gate.md` and finish all verification checks before deploy/cutover.
+

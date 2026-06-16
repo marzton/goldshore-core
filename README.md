@@ -1,14 +1,11 @@
-# 🏛️ Gold Shore Core
-**The Unified Infrastructure & Agency Gateway**
+# goldshore-core — Core Worker (Deprecated)
 
-`goldshore-core` is a high-performance monorepo orchestrating a tiered SaaS ecosystem. It uses **Cloudflare Workflows** for stateful AI tasks and a unified **D1/KV Identity Layer**.
+## Status
+This worker (`goldshore-core` on CF) has been superseded by `gs-api`.
+**No new features should be added here.**
 
-## 🛠️ Monorepo Structure
-- **/apps/goldshore-ai**: Agency Marketing (Astro + Tailwind).
-- **/apps/banproof-me**: Durable Signal Engine (Hono + React).
-- **/apps/admin-dashboard**: Sudo/Owner Control Panel.
-- **/packages/identity**: Unified Auth (JWT/RBAC) logic.
-- **/packages/database**: D1 Migrations & Schemas.
+## Migration target
+All routes → `marzton/goldshore-api` → `gs-api` Worker → `api.goldshore.ai`
 
 ## 🧠 Core Technologies
 - **Compute**: Cloudflare Workers & Workflows.
@@ -34,3 +31,6 @@ Managed via the `marzton` personal account to maximize free-tier Actions and sto
 - Telemetry envelope + dashboard query definitions: `docs/edge-core-observability.md`
 - CI/CD rollout promotion gates: `docs/ci-cd-rollout-gates.md`
 - Sprint 1 execution backlog: `docs/planning/sprint-1-execution.md`
+## Cloudflare Account
+- **Worker:** `goldshore-core` (still deployed, needs decommission)
+- **Account:** Gold Shore Labs (`f77de112d2019e5456a3198a8bb50bd2`)

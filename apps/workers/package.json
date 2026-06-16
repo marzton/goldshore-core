@@ -8,11 +8,11 @@
     "deploy": "wrangler deploy"
   },
   "dependencies": {
-    "hono": "^4.12.7"
+    "hono": "^4.12.15"
   },
   "devDependencies": {
     "@cloudflare/workers-types": "^4.20240208.0",
     "typescript": "^5.3.3",
-    "wrangler": "^3.40.0"
+    "wrangler": "^4.84.1"
   }
 }
