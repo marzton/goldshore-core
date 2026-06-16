@@ -7,7 +7,7 @@
     "build": "tsc"
   },
   "dependencies": {
-    "hono": "^4.12.12"
+    "hono": "^4.12.15"
   },
   "devDependencies": {
     "@cloudflare/workers-types": "^4.20240208.0",
