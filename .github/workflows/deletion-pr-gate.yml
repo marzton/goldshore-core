@@ -1,0 +1,37 @@
+name: Deletion PR Gate
+
+on:
+  pull_request:
+    types: [opened, edited, synchronize, reopened]
+
+permissions:
+  contents: read
+  pull-requests: read
+
+jobs:
+  enforce-deletion-metadata:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Collect changed files
+        id: changed-files
+        uses: actions/github-script@v7
+        with:
+          script: |
+            const files = await github.paginate(github.rest.pulls.listFiles, {
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              pull_number: context.issue.number,
+              per_page: 100,
+            });
+            core.setOutput('files_json', JSON.stringify(files.map((f) => ({
+              filename: f.filename,
+              status: f.status,
+            }))));
+
+      - name: Validate deletion PR requirements
+        env:
+          CHANGED_FILES_JSON: ${{ steps.changed-files.outputs.files_json }}
+        run: node scripts/ci/validate-legacy-deletion-pr.mjs

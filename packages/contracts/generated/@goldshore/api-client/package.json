@@ -1,0 +1,13 @@
+{
+  "name": "@goldshore/api-client",
+  "version": "1.5.0",
+  "private": false,
+  "type": "module",
+  "exports": {
+    ".": "./src/client.ts"
+  },
+  "publishConfig": {
+    "access": "public",
+    "tag": "additive"
+  }
+}

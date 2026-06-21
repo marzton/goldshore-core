@@ -1,0 +1,16 @@
+[
+  {
+    "worker": "api-gateway",
+    "path": "/v1/legacy/orders",
+    "owningTeam": "Core API",
+    "avgDailyRequests7d": 42,
+    "lastSeenAt": "2026-04-03T23:48:00Z"
+  },
+  {
+    "worker": "notifications-worker",
+    "path": "/legacy/push/send",
+    "owningTeam": "Messaging",
+    "avgDailyRequests7d": 0,
+    "lastSeenAt": "2026-03-15T02:12:00Z"
+  }
+]
