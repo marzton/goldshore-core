@@ -1,0 +1,13 @@
+{
+  "required_kv_namespaces": [
+    "INFRA_SECRETS"
+  ],
+  "required_d1_databases": [
+    "gs-platform-prod"
+  ],
+  "required_r2_buckets": [
+    "gs-assets",
+    "gs-assets-preview"
+  ],
+  "required_queues": []
+}

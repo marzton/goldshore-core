@@ -52,7 +52,7 @@ describe('GET /accounts/:id/balances/latest logic', () => {
 
   it('Schema Validation: timestamp should be a valid ISO string', () => {
     const balance = getMockBalance('acc_123');
-    const isoRegex = /^\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}.\d{3}Z$/;
+    const isoRegex = /^\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}\.\d{3}Z$/;
     assert.match(balance.timestamp, isoRegex, 'timestamp should be in ISO 8601 format');
     assert.ok(!isNaN(Date.parse(balance.timestamp)), 'timestamp should be a parsable date');
   });

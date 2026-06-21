@@ -1,9 +1,13 @@
 {
   "name": "@goldshore/contracts",
   "version": "1.0.0",
+  "private": true,
+  "type": "module",
   "main": "dist/index.js",
   "types": "dist/index.d.ts",
   "scripts": {
+    "codegen": "node ./scripts/codegen.mjs",
+    "codegen:check": "node ./scripts/codegen.mjs --check",
     "build": "tsc"
   },
   "devDependencies": {

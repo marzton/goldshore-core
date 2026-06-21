@@ -181,3 +181,5 @@ export interface RiskRadarSnapshot {
   /** 0–100 composite threat level from market volatility + political instability */
   externalThreatLevel: number;
 }
+
+export * from "./telemetry";
