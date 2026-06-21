@@ -1,0 +1,16 @@
+name                   = "goldshore-ai"
+pages_build_output_dir = "dist"
+compatibility_date     = "2026-04-02"
+
+# ── Shared D1 instance: gs-platform-prod ─────────────────────────────────────
+# Replace database_id with the UUID from `wrangler d1 create gs-platform-prod`
+[[d1_databases]]
+binding       = "DB"
+database_name = "gs-platform-prod"
+database_id   = "YOUR_D1_DATABASE_ID"
+
+# ── Shared KV namespace: INFRA_SECRETS ────────────────────────────────────────
+# Replace id with the UUID from `wrangler kv:namespace create INFRA_SECRETS`
+[[kv_namespaces]]
+binding = "INFRA_SECRETS"
+id      = "YOUR_KV_NAMESPACE_ID"
