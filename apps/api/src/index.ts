@@ -73,6 +73,24 @@ const MOCK_ACCOUNTS: Omit<Account, 'createdAt' | 'updatedAt'>[] = [
   },
 ]
 
+const PRE_SERIALIZED_ACCOUNTS = MOCK_ACCOUNTS.map(acc => {
+  const s = JSON.stringify(acc);
+  return s.slice(0, -1) + `,"createdAt":"`;
+});
+
+app.get('/accounts', (c) => {
+  const now = new Date().toISOString()
+  let res = '{"accounts":[';
+  for (let i = 0; i < PRE_SERIALIZED_ACCOUNTS.length; i++) {
+    res += PRE_SERIALIZED_ACCOUNTS[i] + now + `","updatedAt":"` + now + `"} `;
+    if (i < PRE_SERIALIZED_ACCOUNTS.length - 1) res += ',';
+  }
+  res += ']}';
+  return c.body(res, 200, {
+    'Content-Type': 'application/json'
+  })
+})
+
 const MOCK_BALANCE: Omit<BalanceSnapshot, 'accountId' | 'timestamp'> = {
   id: 'bal_123',
   netLiq: 54000.5,
@@ -83,6 +101,27 @@ const MOCK_BALANCE: Omit<BalanceSnapshot, 'accountId' | 'timestamp'> = {
   maintenanceExcess: 25000.0,
   marginUsed: 0,
 }
+
+const PRE_SERIALIZED_BALANCE = (() => {
+  const s = JSON.stringify(MOCK_BALANCE);
+  return s.slice(0, -1) + `,"accountId":"`;
+})();
+
+const ID_REGEX = /^acc_[a-zA-Z0-9]+$/
+
+function escapeJson(s: string) {
+  return s.replace(/\\/g, '\\\\').replace(/"/g, '\\"');
+}
+
+app.get('/accounts/:id/balances/latest', (c) => {
+  const id = c.req.param('id')
+  const now = new Date().toISOString()
+  const escapedId = ID_REGEX.test(id) ? id : escapeJson(id);
+  const res = `{"balance":${PRE_SERIALIZED_BALANCE}${escapedId}","timestamp":"${now}"}}`;
+  return c.body(res, 200, {
+    'Content-Type': 'application/json'
+  })
+})
 
 const MOCK_POSITIONS: Omit<PositionSnapshot, 'accountId' | 'timestamp'>[] = [
   {
@@ -99,21 +138,24 @@ const MOCK_POSITIONS: Omit<PositionSnapshot, 'accountId' | 'timestamp'>[] = [
   },
 ]
 
-app.get('/', (c) => c.text('Goldshore API MVP'))
+const PRE_SERIALIZED_POSITIONS = MOCK_POSITIONS.map(p => {
+  const s = JSON.stringify(p);
+  return s.slice(0, -1) + `,"accountId":"`;
+});
 
-app.get('/accounts', (c) => {
+app.get('/accounts/:id/positions', (c) => {
+  const id = c.req.param('id')
   const now = new Date().toISOString()
-  const accounts: Account[] = MOCK_ACCOUNTS.map((account) => ({ ...account, createdAt: now, updatedAt: now }))
-  return c.json({ accounts })
-})
-
-app.get('/accounts/:id/balances/latest', (c) => {
-  const balance: BalanceSnapshot = {
-    ...MOCK_BALANCE,
-    accountId: c.req.param('id'),
-    timestamp: new Date().toISOString(),
+  const escapedId = ID_REGEX.test(id) ? id : escapeJson(id);
+  let res = '{"positions":[';
+  for (let i = 0; i < PRE_SERIALIZED_POSITIONS.length; i++) {
+    res += PRE_SERIALIZED_POSITIONS[i] + escapedId + `","timestamp":"` + now + `"} `;
+    if (i < PRE_SERIALIZED_POSITIONS.length - 1) res += ',';
   }
-  return c.json({ balance })
+  res += ']}';
+  return c.body(res, 200, {
+    'Content-Type': 'application/json'
+  })
 })
 
 app.get('/accounts/:id/positions', (c) => {
@@ -143,3 +185,5 @@ if (process.env.NODE_ENV !== 'test') {
     port,
   })
 }
+
+export { app }

@@ -3,12 +3,14 @@
 # Wrangler does not support config inheritance. This file documents the shared
 # binding contract that every app in the monorepo must declare independently.
 #
-# After running `wrangler d1 create gs-platform-prod` and
-# `wrangler kv:namespace create INFRA_SECRETS`, copy the returned UUIDs into:
+# After provisioning `gs-platform-prod` + `INFRA_SECRETS`, update:
 #   - apps/banproof-me/wrangler.toml
 #   - apps/goldshore-ai/wrangler.toml
 #   - apps/admin-dashboard/wrangler.toml
-# … and into infra/bindings.json for reference.
+# … and `infra/bindings.json` (`d1.primary.id` and `kv.primary.id`).
+#
+# `infra/bindings.json` also tracks non-primary catalog entries (KV/R2/D1)
+# discovered in Cloudflare dashboard for cross-repo consolidation audits.
 #
 # ── Shared D1 binding ────────────────────────────────────────────────────────
 # [[d1_databases]]

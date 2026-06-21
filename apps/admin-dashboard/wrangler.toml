@@ -2,16 +2,14 @@ name            = "goldshore-admin"
 main            = "src/index.ts"
 compatibility_date = "2026-04-02"
 
-# ── Shared D1 instance: gs-platform-prod ─────────────────────────────────────
-# Replace database_id with the UUID from `wrangler d1 create gs-platform-prod`
+# ── Shared D1 instance: gs_platform_db ─────────────────────────────────────────────
 [[d1_databases]]
 binding         = "DB"
-database_name   = "gs-platform-prod"
-database_id     = "YOUR_D1_DATABASE_ID"
+database_name   = "gs_platform_db"
+database_id     = "9703574e-adb7-481e-8d98-96f8ce5f8a90"
 migrations_dir  = "../../packages/db/migrations/d1"
 
-# ── Shared KV namespace: INFRA_SECRETS ────────────────────────────────────────
-# Replace id with the UUID from `wrangler kv:namespace create INFRA_SECRETS`
+# ── Shared KV namespace: INFRA_SECRETS ──────────────────────────────────────────
 [[kv_namespaces]]
 binding = "INFRA_SECRETS"
-id      = "YOUR_KV_NAMESPACE_ID"
+id      = "0c45009b68c944d6988a5268bdaa7361"

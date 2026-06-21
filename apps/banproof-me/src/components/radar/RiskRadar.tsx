@@ -1,7 +1,7 @@
 /**
- * RiskRadar — SVG polar-coordinate radar chart animated with GSAP.
+ * RiskRadar — SVG polar-coordinate radar chart with animated rendering.
  *
- * Renders four axes:
+ * Renders five axes:
  *   • Equities Exposure
  *   • Sports Exposure
  *   • TCG Exposure
