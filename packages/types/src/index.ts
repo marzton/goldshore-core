@@ -182,4 +182,61 @@ export interface RiskRadarSnapshot {
   externalThreatLevel: number;
 }
 
+// ---------------------------------------------------------------------------
+// FRA — Financial Risk Assessment
+// ---------------------------------------------------------------------------
+
+export type FRADimension =
+  | 'interest_rate'
+  | 'credit'
+  | 'currency'
+  | 'liquidity'
+  | 'concentration';
+
+export interface FRADimensionScore {
+  dimension: FRADimension;
+  /** 0–100; higher = greater uncertainty / risk */
+  score: number;
+  rationale: string;
+  contributingFactors: Record<string, number>;
+}
+
+export interface FRAResult {
+  accountId: string;
+  timestamp: string;
+  /** Composite financial uncertainty score 0–100 */
+  compositeScore: number;
+  classification: 'BENIGN' | 'MODERATE' | 'STRESSED' | 'ACUTE';
+  dimensions: FRADimensionScore[];
+}
+
+// ---------------------------------------------------------------------------
+// EPO — Economic Psychological Oscillator
+// ---------------------------------------------------------------------------
+
+export type ClimatePhase = 'el_nino' | 'la_nina' | 'neutral';
+
+export interface EPOComponents {
+  /** Climate signal derived from ONI: −100 to +100 */
+  climateSignal: number;
+  /** Market sentiment derived from normalised VIX: −100 to +100 */
+  marketSentiment: number;
+  /** Commodity price pressure signal: −100 to +100 */
+  commodityPressure: number;
+  /** Consumer psychology signal: −100 to +100 */
+  consumerPsychology: number;
+  /** Optional FinBERT-derived economic sentiment: −100 to +100 */
+  economicSentiment?: number;
+}
+
+export interface EPOReading {
+  timestamp: string;
+  /** Composite oscillator value: −100 (max negative coupling) to +100 (max positive) */
+  oscillatorValue: number;
+  climatePhase: ClimatePhase;
+  components: EPOComponents;
+  signalAlignment: 'reinforcing' | 'divergent' | 'neutral';
+  interpretation: string;
+}
+
 export * from "./telemetry";
