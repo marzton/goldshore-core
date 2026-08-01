@@ -10,7 +10,7 @@
   },
   "dependencies": {
     "hono": "^4.12.15",
-    "@hono/node-server": "^1.19.13",
+    "@hono/node-server": "^2.0.12",
     "@goldshore/types": "1.0.0",
     "@goldshore/db": "1.0.0",
     "@goldshore/auth": "1.0.0"
