@@ -1,36 +1,21 @@
-# goldshore-core — Core Worker (Deprecated)
+# goldshore-core — Archived
 
 ## Status
-This worker (`goldshore-core` on CF) has been superseded by `gs-api`.
-**No new features should be added here.**
+**ARCHIVED** — This repository contains legacy code that has been superseded.
 
-## Migration target
-All routes → `marzton/goldshore-api` → `gs-api` Worker → `api.goldshore.ai`
+## Migration Completed (2026-08-22)
+All core functionality has been migrated to `marzton/goldshore-ai`:
+- API functionality → `apps/gs-api`
+- Admin UI → `apps/gs-web`
+- Deployment target → `api.goldshore.ai` and `goldshore.ai`
 
-## 🧠 Core Technologies
-- **Compute**: Cloudflare Workers & Workflows.
-- **Data**: Cloudflare D1 (SQL) & KV (Caching).
-- **AI**: Workers AI (Llama-3, Phi-2) & Hugging Face.
-- **Design**: Brutalist Precision (Syne + IBM Plex Mono).
+## Standalone Services
+- **banproof-me**: Continues as independent product on `banproof.me` domain
 
-## 🚀 Deployment
-Managed via the `marzton` personal account to maximize free-tier Actions and storage.
+## For Reference Only
+This repository is archived for historical reference. For active development:
+- See `marzton/goldshore-ai` for platform updates
+- See `marzton/goldshore-core` (banproof-me branch) for banproof-me updates (if maintained separately)
 
-## Cloudflare Binding Audit
-
-- Canonical D1/KV resource IDs live in `infra/bindings.json`.
-- `infra/bindings.json` also includes an observed KV/R2/D1 catalog for cross-repo Cloudflare consolidation.
-- Run `npm run audit:cloudflare` to verify all app `wrangler.toml` files use the same shared IDs before deploy.
-- Git website-to-Cloudflare app ownership is tracked in `infra/cloudflare/git-website-alignment.json`.
-- Current required coverage: `goldshore-core`, `rmarston.github.io`, `banproof.me`, `armsway.com`, `goldshore`, `goldshore-ai`.
-- Run `npm run audit:websites` to catch duplicate active domains/app names before deploy.
-- `apps/goldshore-ai/package-lock.json` is committed so Cloudflare Pages `npm clean-install` works when the project root is set to that app directory.
-
-## Edge/Core Observability
-
-- Telemetry envelope + dashboard query definitions: `docs/edge-core-observability.md`
-- CI/CD rollout promotion gates: `docs/ci-cd-rollout-gates.md`
-- Sprint 1 execution backlog: `docs/planning/sprint-1-execution.md`
-## Cloudflare Account
-- **Worker:** `goldshore-core` (still deployed, needs decommission)
-- **Account:** Gold Shore Labs (`f77de112d2019e5456a3198a8bb50bd2`)
+---
+*Archived: 2026-08-22 | Moved to read-only mode*
